@@ -1,0 +1,19 @@
+<rail version="0.1">
+  <output>
+    <string 
+      name="answer" 
+      description="Answer the question using ONLY the provided context." 
+      length="10,1000"
+    />
+  </output>
+
+  <prompt>
+    Use ONLY the context below to answer the question.
+    If the context does not contain the answer, reply with:
+    "I cannot answer this based on the provided content."
+
+    {{context}}
+
+    Question: {{question}}
+  </prompt>
+</rail>

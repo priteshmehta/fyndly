@@ -1,0 +1,37 @@
+# Backend
+fastapi
+uvicorn
+
+# OpenAI + LangChain
+openai
+langchain
+langchain-openai>=0.1.0
+tiktoken
+
+
+# Web crawling
+aiohttp
+beautifulsoup4
+tldextract
+
+# Embeddings and Vector DB
+chromadb
+#sentence-transformers  # Optional fallback
+#faiss-cpu  # Optional if you switch back from Chroma
+
+# Text processing
+nltk
+scikit-learn
+
+# Periodic tasks
+apscheduler
+
+# Guardrails for validation
+guardrails-ai
+
+# Streamlit UI
+streamlit
+requests
+
+# Environment variables
+python-dotenv
