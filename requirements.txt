@@ -6,6 +6,7 @@ uvicorn
 openai
 langchain
 langchain-openai>=0.1.0
+langchain-chroma
 tiktoken
 
 

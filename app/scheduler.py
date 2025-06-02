@@ -11,5 +11,5 @@ def schedule_crawl(url: str, interval_hours=6):
     def run():
         asyncio.run(periodic_task())
 
-    scheduler.add_job(run, 'interval', hours=interval_hours)
+    scheduler.add_job(run, 'interval', hours=interval_hours, id="periodic-crawl", replace_existing=True)
     scheduler.start()

@@ -3,21 +3,29 @@ from fastapi import FastAPI, BackgroundTasks # type: ignore
 from pydantic import BaseModel
 from app.crawler import embed_site
 from app.tools import restricted_site_retrieval
+from app.chroma import get_collection
 from dotenv import load_dotenv
 import openai
 import os
 import guardrails as gd
 from app.scheduler import schedule_crawl
+from app.logger import AppLogger
+
+logger = AppLogger.get_logger("main", json_logs=True)
 
 load_dotenv()
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
 app = FastAPI()
 
-
 @app.on_event("startup")
+def startup_event():
+    logger.info("🚀 App startup")
+    start_scheduler()
+
+
 def start_scheduler():
-    print("Starting background scheduler...")
+    logger.info("Starting background scheduler...")
     schedule_crawl("https://lycheethings.com", interval_hours=8)
 
 class AskRequest(BaseModel):
@@ -37,11 +45,22 @@ async def health_check():
 @app.get("/crawl-now")
 async def trigger_crawl():
     await embed_site("https://lycheethings.com")
+    #await embed_site("https://priteshmehta.github.io")
     return {"status": "Manual crawl triggered"}
 
 # Check scheduled jobs
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 scheduler = AsyncIOScheduler()
+
+@app.get("/debug/chroma")
+def debug_chroma(limit: int = 5):
+    collection = get_collection()
+    results = collection.get(include=["documents", "metadatas"], limit=limit)
+    return {
+        "count": collection.count(),
+        "documents": results["documents"],
+        "metadatas": results["metadatas"]
+    }
 
 @app.get("/debug/scheduled-jobs")
 async def get_jobs():
@@ -96,9 +115,9 @@ Do not guess or hallucinate. If the site does not cover the answer, say so.
         tool_choice="auto"
     )
 
-    print(f"chatGPT Response: {response.choices[0].message}")  
+    logger.info(f"chatGPT Response: {response.choices[0].message}")
     raw_output = response.choices[0].message.content or "No answer."
-    print(f"Raw output: {raw_output}")  # Debugging line
+    #logger.info(f"Raw output: {raw_output}")  # Debugging line
     data = guard.parse(raw_output)
     print(f"Guardrails validated data: {data}")  # Debugging line
     validated, _ = data
