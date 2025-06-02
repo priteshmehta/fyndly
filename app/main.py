@@ -119,7 +119,7 @@ Do not guess or hallucinate. If the site does not cover the answer, say so.
     raw_output = response.choices[0].message.content or "No answer."
     #logger.info(f"Raw output: {raw_output}")  # Debugging line
     data = guard.parse(raw_output)
-    print(f"Guardrails validated data: {data}")  # Debugging line
+    logger.info(f"Guardrails validated data: {data}")
     validated, _ = data
 
     return AskResponse(answer=validated["answer"])

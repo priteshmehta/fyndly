@@ -28,8 +28,14 @@ async def fetch(session, url):
     try:
         async with session.get(url, timeout=15) as response:
             text = await response.text()
+            # with open("debug.html", "w", encoding="utf-8") as f:
+            #     f.write(text)
+            # Parse the HTML content and extract text
             soup = BeautifulSoup(text, 'html.parser')
-            return soup.get_text(separator=" ", strip=True)
+            return {
+                "content": soup.get_text(separator=" ", strip=True),
+                "urls": [urljoin(url, a["href"]) for a in soup.find_all("a", href=True)]
+            }
     except:
         return None
 
@@ -53,17 +59,12 @@ async def crawl_site(start_url: str, max_pages=100):
                 continue
             visited.add(url)
             logger.info(f"🔍 Crawling: {url}")
-            text = await fetch(session, url)
-            logger.info(f"Fetched {len(text) if text else 0 } characters from {url}")
-            if text:
-                contents.append(Document(page_content=text, metadata={"source": url}))
-
-                #logger.info(f"Parsing HTML content: {contents}")
-                soup = BeautifulSoup(text, 'html.parser')
-                logger.info(f"Found {len(soup.find_all('a', href=True))} links on {url}")
+            page_data = await fetch(session, url)
+            if page_data:
+                contents.append(Document(page_content=page_data["content"], metadata={"source": url}))
+                logger.info(f"Found Total Number of urls: {len(page_data['urls'])}")
                 # Find all links on the page
-                for a in soup.find_all("a", href=True):
-                    full_url = urljoin(url, a["href"])
+                for full_url in page_data["urls"]:
                     ext = tldextract.extract(full_url)
                     if ext.registered_domain == domain and full_url not in visited:
                         to_visit.append(full_url)
@@ -73,7 +74,6 @@ async def crawl_site(start_url: str, max_pages=100):
 async def embed_site(url: str, db_path="chroma_db"):
     logger.info(f"Embedding site: {url}")
     raw_docs = await crawl_site(url)
-    #logger.info(raw_docs)
     splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=50)
     docs = splitter.split_documents(raw_docs)
     #logger.info(f"docs: {docs}")
