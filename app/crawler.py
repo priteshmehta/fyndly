@@ -1,3 +1,4 @@
+
 from langchain_chroma import Chroma
 import chromadb
 import aiohttp
@@ -11,18 +12,18 @@ from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.docstore.document import Document
 import os
 from app.logger import AppLogger
-import chromadb
+from app.models.chroma import get_chroma_db
 
 logger = AppLogger.get_logger("crawler", json_logs=False)
 
-embeddings = OpenAIEmbeddings(api_key=os.getenv("OPENAI_API_KEY"))
+# embeddings = OpenAIEmbeddings(api_key=os.getenv("OPENAI_API_KEY"))
 
-def get_chroma_db(persist_dir="chroma_db"):
-    return Chroma(
-        collection_name="site_content",
-        embedding_function=embeddings,
-        persist_directory=persist_dir
-    )
+# def get_chroma_db(persist_dir="chroma_db"):
+#     return Chroma(
+#         collection_name="site_content",
+#         embedding_function=embeddings,
+#         persist_directory=persist_dir
+#     )
 
 async def fetch(session, url):
     try:
@@ -76,7 +77,6 @@ async def embed_site(url: str, db_path="chroma_db"):
     raw_docs = await crawl_site(url)
     splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=50)
     docs = splitter.split_documents(raw_docs)
-    #logger.info(f"docs: {docs}")
     db = get_chroma_db(db_path)
     db.add_documents(docs)
     logger.info(f"✅ Chroma collection created with {db._collection.count()} documents")

@@ -1,6 +1,8 @@
 # Backend
 fastapi
 uvicorn
+pydantic
+pydantic-settings
 
 # OpenAI + LangChain
 openai
@@ -36,3 +38,4 @@ requests
 
 # Environment variables
 python-dotenv
+
