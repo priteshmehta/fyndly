@@ -15,16 +15,7 @@ from app.logger import AppLogger
 from app.models.chroma import get_chroma_db
 
 logger = AppLogger.get_logger("crawler", json_logs=False)
-
-# embeddings = OpenAIEmbeddings(api_key=os.getenv("OPENAI_API_KEY"))
-
-# def get_chroma_db(persist_dir="chroma_db"):
-#     return Chroma(
-#         collection_name="site_content",
-#         embedding_function=embeddings,
-#         persist_directory=persist_dir
-#     )
-
+ 
 async def fetch(session, url):
     try:
         async with session.get(url, timeout=15) as response:
