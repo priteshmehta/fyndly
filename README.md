@@ -29,7 +29,12 @@ Ask questions directly about a specific website using GPT-4o — powered by peri
 ---
 
 ## 📁 Project Structure
-To support Python 3.11
+
+### Secrets
+1. Rename `.env.example` to `.env`
+2. update `.env` file with OpenAI Api Key
+
+### Local Dev Dev setup for Python 3.11
 ```sh
 brew install pyenv
 pyenv install 3.11.9
@@ -40,3 +45,21 @@ pip install --upgrade pip
 pip install -r requirements.txt
 pip install -U langchain-community
 ```
+### Docker Setup
+Build docker image
+```sh
+./build.sh 
+```
+Run Backend App
+```sh
+./run_docker_backend.sh
+```
+Run Frontend App
+```sh
+streamlit run app/ui.py --server.port 8501
+```
+Stop App
+```sh
+./stop.sh 
+```
+
