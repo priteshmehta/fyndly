@@ -44,30 +44,19 @@ source .venv/bin/activate
 pip install --upgrade pip
 pip install -r requirements.txt
 pip install -U langchain-community
+
+streamlit run app/ui.py --server.port 8501 # run frontend app 
 ```
 ### Docker Setup
-Build Docker Image
+Build & Run Docker Image
 ```sh
-./build.sh 
+./build.sh
+./run_docker_backend.sh 
+./run_docker_frontend.sh
+./stop.sh  # shutdown
 ```
-Run Backend App
-```sh
-./run_docker_backend.sh
-```
-Run Frontend App
-```sh
-./run_docker_frontend.sh OR 
-streamlit run app/ui.py --server.port 8501
-```
-Stop App
-```sh
-./stop.sh 
-```
-
-App
+App Server
 ```sh
 Frontend: http://localhost:8501
 Backend: http://localhost:8000
 ```
-
-
