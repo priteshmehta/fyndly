@@ -3,6 +3,7 @@ import requests
 from config import settings
 
 st.set_page_config(page_title="Fyndly", layout="centered")
+backend_url = f"http://{settings.api_server}:{settings.api_port}"
 
 st.title("📘 How can I help you?")
 
@@ -12,7 +13,8 @@ question = st.text_area("Question", placeholder="What is the main product offere
 if st.button("Ask"):
     with st.spinner("Thinking..."):
         try:
-            res = requests.post("http://127.0.0.1:8000/ask", json={"question": question})
+            st.write("backend_url:", backend_url)  # Debugging line
+            res = requests.post(f"{backend_url}/ask", json={"question": question})
             print(res.status_code, question)  # Debugging line
             answer = res.json().get("answer", "No response")
             st.success(f"Answer: {answer}")
@@ -22,7 +24,7 @@ if st.button("Ask"):
 if st.button("RAG Ask"):    
     with st.spinner("Thinking..."):
         try:
-            res = requests.post("http://127.0.0.1:8000/rag", json={"question": question})
+            res = requests.post(f"{backend_url}/rag", json={"question": question})
             print(res.status_code, question)  # Debugging line
             answer = res.json().get("answer", "No response")
             st.success(f"Answer: {answer}")

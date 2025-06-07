@@ -17,6 +17,7 @@ import json
 logger = AppLogger.get_logger("main", level=settings.log_level, json_logs=True)
 
 openai.api_key = settings.openai_api_key
+logger.info(f"OpenAI API Key: {openai.api_key}")
 
 app = FastAPI(title=settings.app_name,version="1.0.0")
 

@@ -1,4 +1,4 @@
-from app.config import Settings
+from app.config import settings
 import chromadb
 from langchain_chroma import Chroma
 from chromadb.api.models.Collection import Collection
@@ -16,7 +16,7 @@ def get_collection(name: str) -> Collection:
 
 def get_chroma_db(persist_dir=CHROMA_PATH):
     return Chroma(
-        collection_name=Settings.collection_name,
+        collection_name=settings.collection_name,
         embedding_function=embeddings,
         persist_directory=persist_dir
     )

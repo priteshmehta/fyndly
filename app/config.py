@@ -12,6 +12,8 @@ class Settings(BaseSettings):
     log_level: str = os.getenv("LOG_LEVEL", "INFO")
     web_site: str = "https://lycheethings.com"
     openai_api_key: str = os.getenv("OPENAI_API_KEY", "")
+    api_server: str = os.getenv("API_SERVER", "127.0.0.1")
+    api_port: str = os.getenv("API_PORT", "8000")
 
 settings = Settings()
 

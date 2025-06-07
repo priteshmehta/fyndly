@@ -46,7 +46,7 @@ pip install -r requirements.txt
 pip install -U langchain-community
 ```
 ### Docker Setup
-Build docker image
+Build Docker Image
 ```sh
 ./build.sh 
 ```
@@ -56,10 +56,18 @@ Run Backend App
 ```
 Run Frontend App
 ```sh
+./run_docker_frontend.sh OR 
 streamlit run app/ui.py --server.port 8501
 ```
 Stop App
 ```sh
 ./stop.sh 
 ```
+
+App
+```sh
+Frontend: http://localhost:8501
+Backend: http://localhost:8000
+```
+
 
