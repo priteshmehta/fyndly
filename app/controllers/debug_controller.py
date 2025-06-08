@@ -8,14 +8,17 @@ router = APIRouter()
 
 @router.get("/debug/chroma")
 def debug_chroma(limit: int = 5):
-    collection = get_collection(settings.collection_name)
-    results = collection.get(include=["documents", "metadatas"], limit=limit)
-    #results = db._collection.get(include=["documents", "metadatas"], limit=limit)
-    return {
-        "count": collection.count(),
-        "documents": results["documents"],
-        "metadatas": results["metadatas"]
-    }
+    try:
+        collection = get_collection(settings.collection_name)
+        results = collection.get(include=["documents", "metadatas"], limit=limit)
+        #results = db._collection.get(include=["documents", "metadatas"], limit=limit)
+        return {
+            "count": collection.count(),
+            "documents": results["documents"],
+            "metadatas": results["metadatas"]
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error accessing ChromaDB: {str(e)}")  
 
 @router.get("/debug/scheduled-jobs")
 async def get_jobs():

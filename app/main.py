@@ -11,7 +11,7 @@ import guardrails as gd
 from app.scheduler import schedule_crawl
 from app.logger import AppLogger
 from app.config import settings
-from app.controllers import crawler_controller, debug_controller
+from app.controllers import crawler_controller, debug_controller, pdf_controller as pdf
 import json
 
 logger = AppLogger.get_logger("main", level=settings.log_level, json_logs=True)
@@ -24,6 +24,7 @@ app = FastAPI(title=settings.app_name,version="1.0.0")
 # Register controller/router
 app.include_router(debug_controller.router)
 app.include_router(crawler_controller.router)
+app.include_router(pdf.router)
 
 @app.on_event("startup")
 def startup_event():

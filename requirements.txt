@@ -16,11 +16,13 @@ tiktoken
 aiohttp
 beautifulsoup4
 tldextract
+PyPDF2
+python-multipart
+
 
 # Embeddings and Vector DB
 chromadb
 #sentence-transformers  # Optional fallback
-#faiss-cpu  # Optional if you switch back from Chroma
 
 # Text processing
 nltk
