@@ -13,11 +13,11 @@ from app.logger import AppLogger
 from app.config import settings
 from app.controllers import crawler_controller, debug_controller, pdf_controller as pdf
 import json
+from fastapi.responses import StreamingResponse
 
 logger = AppLogger.get_logger("main", level=settings.log_level, json_logs=True)
 
 openai.api_key = settings.openai_api_key
-logger.info(f"OpenAI API Key: {openai.api_key}")
 
 app = FastAPI(title=settings.app_name,version="1.0.0")
 
@@ -46,6 +46,57 @@ class AskResponse(BaseModel):
 @app.get("/ping")
 async def health_check():
     return {"status": "ok"}
+
+@app.post("/chat")
+async def chat_stream(data: AskRequest):
+    query = data.question
+    system_prompt = f"""
+        "You are a strict assistant who only answers questions using content from '{settings.web_site}'. "
+        "For any user query, you must invoke the websearch tool using the format: 'site:{settings.web_site} {query}'. "
+        "Do not answer questions without using the tool. If the query is outside the scope of {settings.web_site}, refuse politely.",
+    """
+    site_specific_query = f"{system_prompt} site:{settings.web_site} {query}"
+    def stream_response():
+        try:
+            response = openai.responses.create(
+                model="gpt-4o",
+                tools=[{"type": "web_search_preview"}],
+                input=site_specific_query,
+                stream=True, 
+            )  
+
+            full_response = ""
+            for event in response:
+                print(event.type)
+                if event.type == "response.output_text.delta":
+                    #full_response += event.data
+                    print(event) # Display in real-time
+                    yield event  # Yield the chunk for streaming
+                elif event.type == "error":
+                    print(f"Error: {event.data}")
+                    yield event.data
+                    break # or handle the error in another way
+                elif event.type == "response_completed":
+                    print("\nStreaming complete.")
+                    break
+        except Exception as e:
+            print(f"An error occurred: {e}")
+            # for event in stream:
+            #     print(event)
+            #     yield event
+    
+    return StreamingResponse(stream_response(), media_type="text/plain")
+
+    # async def stream_response():
+    #     try:
+    #         async for chunk in get_answer(q):
+    #             yield chunk
+    #     except Exception as e:
+    #         logger.error(f"Error in streaming response: {e}")
+    #         yield "❌ An error occurred."
+
+    # return StreamingResponse(stream_response(), media_type="text/plain")  
+    
 
 @app.post("/ask")
 async def ask_question2(data: AskRequest):
