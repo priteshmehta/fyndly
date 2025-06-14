@@ -1,10 +1,35 @@
 # fyndly
 
-# 🧠 Domain QA Bot
+# 🧠 Fyndly
 
 Ask questions directly about a specific website using GPT-4o — powered by periodic crawling, Chroma vector search, and hallucination-resistant guardrails.
 
 ---
+
+
+
+             ┌──────────────┐
+             │ Input Docs   │
+             └────┬─────────┘
+                  ↓
+        ┌─────────────────────┐
+        │ Chunking & Cleaning │
+        └────┬────────────────┘
+             ↓
+    ┌──────────────────────┐
+    │OpenAI Embeddings API │   <-- Expensive but excellent quality
+    └────┬─────────────────┘
+         ↓
+   ┌────────────────┐
+   │ ChromaDB (local)│  <-- Local storage, indexed
+   └────┬────────────┘
+        ↓
+     Top-k context
+        ↓
+  ┌────────────────────┐
+  │ LLM (e.g., Ollama/chatGPT) │ <-- Local model for reasoning/generation
+  └────────────────────┘
+
 
 ## 🚀 Features
 
