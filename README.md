@@ -27,7 +27,7 @@ Ask questions directly about a specific website using GPT-4o — powered by peri
      Top-k context
         ↓
   ┌────────────────────┐
-  │ LLM (e.g., Ollama/chatGPT) │ <-- Local model for reasoning/generation
+  │ LLM (e.g., Ollama) │ <-- Local model for reasoning/generation
   └────────────────────┘
 
 
